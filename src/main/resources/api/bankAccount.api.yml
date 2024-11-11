@@ -1,0 +1,174 @@
+openapi: "3.0.0"
+servers:
+  - url: http://localhost:8080
+info:
+  version: 1.0.0
+  title: Bank Account api
+paths:
+  "/bank-account/{id}":
+    get:
+      summary: "Get bank account info"
+      operationId: "getBankAccountInfo"
+      parameters:
+        - name: id
+          in: path
+          description: "Id of bank account"
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: "Bank Account Information"
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/BankAccountInfo"
+        400:
+          $ref: "common.api.yml#/components/responses/400"
+        401:
+          $ref: "common.api.yml#/components/responses/401"
+        404:
+          $ref: "common.api.yml#/components/responses/404"
+        500:
+          $ref: "common.api.yml#/components/responses/500"
+    put:
+      summary: "Update bank account"
+      operationId: "updateBankAccount"
+      parameters:
+        - name: id
+          in: path
+          description: "Id of a program"
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBankAccountRequest"
+      responses:
+        200:
+          description: "Update existing Bank Account"
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/BankAccountInfo"
+        400:
+          $ref: "common.api.yml#/components/responses/400"
+        401:
+          $ref: "common.api.yml#/components/responses/401"
+        404:
+          $ref: "common.api.yml#/components/responses/404"
+        500:
+          $ref: "common.api.yml#/components/responses/500"
+    delete:
+      summary: "Close bank account"
+      operationId: "closeBankAccount"
+      parameters:
+        - name: id
+          in: path
+          description: "Id"
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        204:
+          description: "Close existing bank account"
+        400:
+          $ref: "common.api.yml#/components/responses/400"
+        401:
+          $ref: "common.api.yml#/components/responses/401"
+        404:
+          $ref: "common.api.yml#/components/responses/404"
+        500:
+          $ref: "common.api.yml#/components/responses/500"
+  "/bank-account/":
+    post:
+      summary: "Create Bank Account"
+      operationId: "createBankAccount"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBankAccountRequest"
+      responses:
+        200:
+          description: "Create new bank account"
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/BankAccountInfo"
+        400:
+          $ref: "common.api.yml#/components/responses/400"
+        401:
+          $ref: "common.api.yml#/components/responses/401"
+        404:
+          $ref: "common.api.yml#/components/responses/404"
+        500:
+          $ref: "common.api.yml#/components/responses/500"
+
+
+components:
+  schemas:
+    BankAccountInfo:
+      description: "Representation of product"
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: "Id"
+        client:
+          $ref: "#/components/schemas/Client"
+        accountNumber:
+          type: string
+          description: "Bank Account Number"
+        currency:
+          type: string
+          description: "Currency code"
+        balance:
+          type: number
+          description: "Bank Account available balance"
+        balance2:
+          type: number
+          description: "Bank Account available balance in another currency"
+    Client:
+      description: "Client"
+      properties:
+        firstName:
+          type: string
+          description: "Client first name"
+        lastName:
+          type: string
+          description: "Client last name"
+    CreateBankAccountRequest:
+      description: "Create request"
+      properties:
+        firstName:
+          type: string
+          description: "Client first name"
+        lastName:
+          type: string
+          description: "Client last name"
+        balance:
+          type: number
+          description: "Starting balance"
+        currency:
+          type: string
+          description: "Currency code"
+    UpdateBankAccountRequest:
+      description: "Create request"
+      properties:
+        operationType:
+          type: string
+          enum: ["PAYMENT", "INSTALLMENT"]
+        balance:
+          type: number
+          description: "Starting balance"
+        currency:
+          type: string
+          description: "Currency code"

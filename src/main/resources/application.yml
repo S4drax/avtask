@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: avtask
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=avtask
+    username: postgres
+    password: 123
+    hikari:
+      schema: avtask
+  liquibase:
+    enabled: true
+    change-log: classpath:/changelog.yml
+    default-schema: avtask
+    liquibase-schema: avtask
+  cloud:
+    config:
+      enabled: false
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: "none"
+    show-sql: true
+    properties:
+      hibernate:
+        default_schema: avtask
+  security:
+    user:
+      name: user
+      password: password
+
+  logging:
+    level:
+      root: info
+
+avtask:
+  nbp:
+    url: "https://api.nbp.pl/api/exchangerates/rates/A/"

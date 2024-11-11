@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering
+  SYSTEM "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-reverse-engineering>
+  <type-mapping>
+    <sql-type hibernate-type="Long" jdbc-type="INTEGER"/>
+    <sql-type hibernate-type="LocalDateTime" jdbc-type="TIMESTAMP"/>
+    <sql-type hibernate-type="LocalDate" jdbc-type="DATE"/>
+  </type-mapping>
+</hibernate-reverse-engineering>

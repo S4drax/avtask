@@ -1,0 +1,107 @@
+plugins {
+    id 'java'
+    id 'org.liquibase.gradle' version '2.1.1'
+}
+
+group 'com.sadrax'
+version '0.0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    reverseMap
+}
+
+ext {
+    set('hibernateDestDir', file("$parent.projectDir/src/main/java"))
+}
+
+dependencies {
+    liquibaseRuntime 'org.liquibase:liquibase-core:4.9.1'
+    liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:3.0.0'
+    liquibaseRuntime 'info.picocli:picocli:4.6.1'
+    liquibaseRuntime 'org.yaml:snakeyaml:2.2'
+    liquibaseRuntime 'org.postgresql:postgresql:42.3.8'
+    liquibaseRuntime 'org.liquibase.ext:liquibase-hibernate5:3.6'
+    liquibaseRuntime sourceSets.main.output
+
+    reverseMap 'org.hibernate:hibernate-core:5.6.9.Final'
+    reverseMap 'org.hibernate:hibernate-tools:5.6.15.Final'
+    reverseMap 'org.postgresql:postgresql:42.3.8'
+
+    implementation 'org.hibernate:hibernate-tools:5.6.15.Final'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+def changeLog = "changelog.yml"
+
+liquibase {
+    activities {
+        main {
+            changeLogFile changeLog
+            url 'jdbc:postgresql://localhost:5432/postgres?currentSchema=avtask'
+            username 'postgres'
+            password '123'
+            defaultSchemaName 'avtask'
+        }
+    }
+}
+
+
+
+tasks.findByName('build').mustRunAfter('clean')
+task reverseMap {
+    dependsOn build
+    doFirst {
+        def generatedDir = hibernateDestDir.toString() + '/com/sadrax/avtask/infrastructure/entity/generated'
+        delete generatedDir
+    }
+    outputs.upToDateWhen { false }
+    outputs.dir hibernateDestDir
+    doLast {
+        ant {
+            taskdef(
+                    name: 'hibernatetool',
+                    classname: 'org.hibernate.tool.ant.HibernateToolTask',
+                    classpath: sourceSets.main.runtimeClasspath.asPath + ' ' + configurations.reverseMap.asPath
+            )
+            hibernatetool(destdir: hibernateDestDir, templatepath: 'src/main/resources/hibernate-templates') {
+                jdbcconfiguration(
+                        propertyFile: "$projectDir/src/main/resources/reveng/hibernate.reveng.properties",
+                        revengFile: "$projectDir/src/main/resources/reveng/hibernate.reveng.xml",
+                        packagename: "com.sadrax.avtask.infrastructure.entity.generated",
+                        reversestrategy: "com.sadrax.avtask.RevEngStrategy"
+                )
+                hbm2java(jdk5: true, ejb3: true)
+            }
+            replaceregexp(
+                    match: "import javax.persistence.",
+                    replace: "import jakarta.persistence.",
+                    byline: true
+            ) {
+                fileset(dir: hibernateDestDir)
+            }
+            replaceregexp(
+                    match: "@OneToMany\\(",
+                    replace: "@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, ",
+                    byline: "true"
+            ) {
+                fileset(dir: hibernateDestDir)
+            }
+            replaceregexp(
+                    match: "private Set<",
+                    replace: "@Builder.Default private Set<",
+                    byline: "true"
+            ) {
+                fileset(dir: hibernateDestDir)
+            }
+        }
+    }
+}
+
+

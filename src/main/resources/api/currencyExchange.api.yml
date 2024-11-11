@@ -1,0 +1,59 @@
+openapi: "3.0.0"
+servers:
+  - url: http://localhost:8080
+info:
+  version: 1.0.0
+  title: Bank Account api
+paths:
+  "/currency-exchange/":
+    get:
+      summary: "Get bank account info"
+      operationId: "getBankAccountInfo"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CurrencyExchangeRequest"
+      responses:
+        200:
+          description: "Exchange currency value"
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/CurrencyExchange"
+        400:
+          $ref: "common.api.yml#/components/responses/400"
+        401:
+          $ref: "common.api.yml#/components/responses/401"
+        404:
+          $ref: "common.api.yml#/components/responses/404"
+        500:
+          $ref: "common.api.yml#/components/responses/500"
+
+components:
+  schemas:
+    CurrencyExchangeRequest:
+      description: "Currency Exchange Request"
+      properties:
+        currencyFrom:
+          type: string
+          description: "Currency code from"
+        currencyTo:
+          type: string
+          description: "Currency code to"
+        value:
+          type: number
+          description: "Value to exchange"
+    CurrencyExchange:
+      description: "Currency Exchange"
+      properties:
+        currencyFrom:
+          type: string
+          description: "Currency code from"
+        currencyTo:
+          type: string
+          description: "Currency code to"
+        value:
+          type: number
+          description: "Value after exchange"

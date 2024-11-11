@@ -1,0 +1,194 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1-1
+      author: sadrax
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: bank_accounts_pkey
+                  name: bank_account_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: funds
+                  type: NUMERIC(30,4)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: client_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: account_number
+                  type: VARCHAR(28)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: active
+                  type: BOOLEAN
+              - column:
+                  constraints:
+                    nullable: false
+                  name: currency_code
+                  type: VARCHAR(3)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: create_user
+                  type: VARCHAR(30)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: create_date
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: update_user
+                  type: VARCHAR(30)
+              - column:
+                  name: update_date
+                  type: TIMESTAMP WITHOUT TIME ZONE
+            tableName: bank_accounts
+  - changeSet:
+      id: 1-2
+      author: sadrax
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: addresses_pkey
+                  name: address_id
+                  type: UUID
+              - column:
+                  name: street
+                  type: VARCHAR(250)
+              - column:
+                  name: house_number
+                  type: numeric(6, 0)
+              - column:
+                  name: flat_number
+                  type: numeric(6, 0)
+              - column:
+                  name: zip_code
+                  type: VARCHAR(20)
+              - column:
+                  name: city
+                  type: VARCHAR(50)
+              - column:
+                  name: country
+                  type: VARCHAR(50)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: create_user
+                  type: VARCHAR(30)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: create_date
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: update_user
+                  type: VARCHAR(30)
+              - column:
+                  name: update_date
+                  type: TIMESTAMP WITHOUT TIME ZONE
+            tableName: addresses
+  - changeSet:
+      id: 1-3
+      author: sadrax
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: clients_pkey
+                  name: client_id
+                  type: UUID
+              - column:
+                  name: first_name
+                  type: VARCHAR(50)
+              - column:
+                  name: last_name
+                  type: VARCHAR(50)
+              - column:
+                  name: email
+                  type: VARCHAR(50)
+              - column:
+                  name: address_id
+                  type: UUID
+              - column:
+                  name: billing_address_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: create_user
+                  type: VARCHAR(30)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: create_date
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: update_user
+                  type: VARCHAR(30)
+              - column:
+                  name: update_date
+                  type: TIMESTAMP WITHOUT TIME ZONE
+            tableName: clients
+  - changeSet:
+      id: 1-4
+      author: sadrax
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: address_id
+            baseTableName: clients
+            constraintName: fk_clients_address_id
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: address_id
+            referencedTableName: addresses
+            validate: true
+  - changeSet:
+      id: 1-5
+      author: sadrax
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: billing_address_id
+            baseTableName: clients
+            constraintName: fk_clients_billing_address_id
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: address_id
+            referencedTableName: addresses
+            validate: true
+  - changeSet:
+      id: 1-6
+      author: sadrax
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: client_id
+            baseTableName: bank_accounts
+            constraintName: fk_bank_accounts_client_id
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: client_id
+            referencedTableName: clients
+            validate: true
