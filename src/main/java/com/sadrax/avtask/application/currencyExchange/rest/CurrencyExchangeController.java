@@ -21,7 +21,7 @@ public class CurrencyExchangeController implements CurrencyExchangeApi {
     private final CurrencyExchangeRTOMapper mapper;
 
     @Override
-    public ResponseEntity<CurrencyExchangeRTO> getBankAccountInfo(CurrencyExchangeRequestRTO requestRTO) {
+    public ResponseEntity<CurrencyExchangeRTO> getCurrencyExchange(CurrencyExchangeRequestRTO requestRTO) {
         CurrencyExchange currencyExchange = currencyExchangeService.getCurrencyExchange(requestRTO.getCurrencyFrom(), requestRTO.getCurrencyTo(), requestRTO.getValue());
         return ResponseEntity.ok(mapper.mapToRTO(currencyExchange));
 

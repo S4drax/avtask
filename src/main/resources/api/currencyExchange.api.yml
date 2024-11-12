@@ -7,8 +7,8 @@ info:
 paths:
   "/currency-exchange/":
     get:
-      summary: "Get bank account info"
-      operationId: "getBankAccountInfo"
+      summary: "Get currency exchange info"
+      operationId: "getCurrencyExchange"
       requestBody:
         required: true
         content:
